@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 Hyperledger Fabric 开发实战
-===================
+=============================
 .. note::
 
       这里是Hyperledger Fabric开发实战相关教程，欢迎交流与指教。
@@ -16,11 +16,11 @@ Hyperledger Fabric 开发实战
       :maxdepth: 2
       :glob:
 
-      begin/index
-      solidity/index
-      truffle/index
-      web3js/index
-      web3j/index
+      chapter01/index
+      chapter02/index
+      chapter03/index
+      chapter04/index
+
       explorer/index
       chat/index
       donate/index

@@ -1,0 +1,215 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="zh" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="zh" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Hyperledger Fabric网络配置及启动 &mdash; fabric-docs v1.0 文档</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="../index.html" class="icon icon-home"> fabric-docs
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: 100%;" alt="以太坊DApp开发实战" src=../_static/images/eth.png />
+<br>
+<a href="https://github.com/cayden"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="../_static/images/github_button.png"/></a>
+&nbsp;&nbsp;&nbsp;<a href="https://blog.csdn.net/cuiran"><img style="padding: 0px; margin: auto auto auto auto;" alt="csdn" src="../_static/images/csdn-logo_.png"/></a>
+
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapter01/index.html">第一章、Hyperledger Fabric 架构详解</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapter02/index.html">第二章、 Fabric网络搭建详解</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">第三章、Hyperledger Fabric浏览器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explorer/index.html">搭建以太坊区块链浏览器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chat/index.html">联系我</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../donate/index.html">捐赠支持</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">fabric-docs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Hyperledger Fabric网络配置及启动</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/chapter03/02_network_configuration.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="hyperledger-fabric">
+<h1>Hyperledger Fabric网络配置及启动<a class="headerlink" href="#hyperledger-fabric" title="永久链接至标题">¶</a></h1>
+<p>2.0版本的Fabric，则迎来了以下这些改进：</p>
+<ul class="simple">
+<li><p>新的链码（chaincode）生命周期管理：重新设计的链码生命周期管理过程引入了智能合约的去中心化治理，在与账本进行交互之前，新的Fabric链码生命周期允许多个组织在链码参数（如链码认可策略）上达成一致；</p></li>
+<li><p>用于协作和共识的新链码应用模式；</p></li>
+<li><p>在需知悉基础上的数据隐私：组织现在可选择与其直接网络的特定成员私下共享数据；</p></li>
+<li><p>新的外部链码启动程序：该功能允许操作者使用自己选择的技术来构建和启动链码；</p></li>
+<li><p>新的Raft共识；</p></li>
+<li><p>性能改进：包括任务的并行化和更高效的程序流，允许网络每秒支持数千笔交易；</p></li>
+</ul>
+<p>本课程主要围绕以太坊的基础，分了六章如图所示：</p>
+<div align=center><p><img alt="以太坊的基础教程" src="../_images/5e023008af6a72.jpg" /></p>
+</div></div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, cayden
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

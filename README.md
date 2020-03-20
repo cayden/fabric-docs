@@ -1,45 +1,30 @@
 # Hyperledger Fabric 开发实战
 
-文档详见 [以太坊DApp开发实战](https://fabric-docs.readthedocs.io/en/latest/)
+文档详见 [Hyperledger Fabric 开发实战](https://fabric-docs.readthedocs.io/en/latest/)
 
 ### 全书目录：
 
-第一章、以太坊入门基础篇：
+第一章、Hyperledger Fabric 架构详解：
 
-- 课程介绍
-- 以太坊基础知识
-- Windows搭建以太坊
-- Mac平台搭建以太坊
-- 控制台模拟转账
+- Hyperledger 项目简介
+- Hyperledger Fabric网络体验
+- Hyperledger Fabric系统架构
+- Hyperledger Fabric核心组件
+- Hyperledger Fabric交易流程
 
-第二章、智能合约开发篇：
+第二章、 Fabric网络搭建详解：
 
-- Remix开发智能合约
-- 智能合约部署和使用
-
-
-第三章、以太坊开发框架Truffle：
-
-- 开发框架Truffle介绍
-- Truffle安装部署和测试
+- Hyperledger Fabric网络环境准备
+- Hyperledger Fabric网络配置及启动
+- Hyperledger Fabric网络测试
 
 
-第四章、Web3.js开发篇：
+第三章、Hyperledger Fabric浏览器：
 
-- 环境搭建
-- 添加账户
-- 转账和余额查询功能实现
+- Hyperledger Fabric浏览器搭建
 
-第五章、Web3j开发篇：
 
-- 环境搭建
-- 添加账户
-- 转账和余额查询功能实现
-- 投票项目实战
-
-第六章、以太坊区块链浏览器：
-- 搭建以太坊区块链浏览器
-
+未完待续.........
 
 
 捐赠支持
@@ -49,7 +34,6 @@
 <center> 如果您愿意打赏小崔的话，可以扫描下方的二维码，感谢你的支持！</center>
 
 --------------------------------------------
-
 
 
 
