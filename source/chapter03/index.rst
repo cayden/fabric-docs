@@ -13,3 +13,4 @@ Hyperledger Fabric是超级账本联盟的主要项目之一，其作为一个�
     :numbered: 2
 
     01_explorer_ready
+    02_explorer_exception

@@ -21,6 +21,6 @@ Hyperledger Fabric 开发实战
       chapter03/index
       chapter04/index
 
-      explorer/index
+
       chat/index
       donate/index
