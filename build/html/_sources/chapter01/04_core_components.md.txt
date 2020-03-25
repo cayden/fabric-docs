@@ -1,262 +1,86 @@
 Hyperledger Fabric核心组件
 ==========================
 
-#### 软件安装与配置
-在命令终端执行
-
-> brew tap ethereum/ethereum
-
-> brew install ethereum
-
-执行第二个命令时间会稍微长一点，耐心等待即可
-#### 编译安装
-
-> git clone https://github.com/ethereum/go-ethereum
-
-> sudo apt-get install -y build-essential golang
-
-> cd go-ethereum
-
-> make geth		
-#### 创世区块
-> cd ~
-
-> mkdir -p ethereum
-
-> cd ethereum		
-
-#### 初始化创世区块
-在目录ethereum目录下创建文件 genesis.json
-文件内容为：
-> {
-  "nonce": "0x0000000000000042",
-  "difficulty": "0x020000",
-  "mixhash": "0x0000000000000000000000000000000000000000000000000000000000000000",
-  "coinbase": "0x0000000000000000000000000000000000000000",
-  "timestamp": "0x00",
-  "parentHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
-  "extraData": "0x11bbe8db4e347b4e8c937c1c8370e4b5ed33adb3db69cbdb7a38e1e50b1b82fa",
-  "gasLimit": "0x4c4b40",
-  "config": {
-      "chainId": 15,
-      "homesteadBlock": 0,
-      "eip155Block": 0,
-      "eip158Block": 0
-  },
-  "alloc": { }
-}
-
-
-下面对上面参数进行解释
-
-> mixhash: 与nonce配合用于挖矿，由上一个区块的一部分生成的hash。注意他和nonce的设置需要满足以太坊的Yellow paper, 4.3.4. Block Header Validity, (44)章节所描述的条件。.
->nonce: nonce就是一个64位随机数，用于挖矿，注意他和mixhash的设置需要满足以太坊的Yellow paper, 4.3.4. Block Header Validity, (44)章节所描述的条件。
-
->difficulty: 设置当前区块的难度，如果难度过大，cpu挖矿就很难，这里设置较小难度
-
->alloc: 用来预置账号以及账号的以太币数量，因为私有链挖矿比较容易，所以我们不需要预置有币的账号，需要的时候自己创建即可以。
-
->coinbase: 矿工的账号，随便填
-
->timestamp: 设置创世块的时间戳
-
->parentHash: 上一个区块的hash值，因为是创世块，所以这个值是0
-
->extraData: 附加信息，随便填，可以填你的个性信息
-
->gasLimit: 该值设置对GAS的消耗总量限制，用来限制区块能包含的交易信息总和，因为我们是私有链，所以填最大。
-
-在终端操作如图所示：
-
-<div align=center>
-
-![下载地址](../images/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTgwMjAyMjEyNDM3OTc4.jfif)
-</div>
+要理解Fabric的设计，需要对Fabric核心组件进行进一步学习掌握Fabric的底层运行原理，才能真正理解Fabric的设计初衷.首先看一下
+网络拓扑结构
 
 
 <div align=center>
 
-![下载地址](../images/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTgwMjAyMjEyNDUwNjkz.jfif)
+
+![fabric-samples](../images/13194828-09bace88bad9229e.webp)
 </div>
 
 
+从图中可以看出包含以下节点：客户端节点、CA节点、Peer节点、Orderer节点。
 
-```
-cuiran@cuiran:~/ethereum$     geth --datadir data init genesis.json
-WARN [02-02|07:03:18] No etherbase set and no accounts found as default
-INFO [02-02|07:03:18] Allocated cache and file handles         database=/Users/cuiran/ethereum/data/geth/chaindata cache=16 handles=16
-INFO [02-02|07:03:18] Writing custom genesis block
-INFO [02-02|07:03:18] Successfully wrote genesis state         database=chaindata                                  hash=611596…424d04
-INFO [02-02|07:03:18] Allocated cache and file handles         database=/Users/cuiran/ethereum/data/geth/lightchaindata cache=16 handles=16
-INFO [02-02|07:03:18] Writing custom genesis block
-INFO [02-02|07:03:18] Successfully wrote genesis state         database=lightchaindata                                  hash=611596…424d04
-cuiran@cuiran:~/ethereum$     find data
-data
-data/geth
-data/geth/.DS_Store
-data/geth/chaindata
-data/geth/chaindata/000001.log
-data/geth/chaindata/CURRENT
-data/geth/chaindata/LOCK
-data/geth/chaindata/LOG
-data/geth/chaindata/MANIFEST-000000
-data/geth/lightchaindata
-data/geth/lightchaindata/000001.log
-data/geth/lightchaindata/CURRENT
-data/geth/lightchaindata/LOCK
-data/geth/lightchaindata/LOG
-data/geth/lightchaindata/MANIFEST-000000
-data/keystore
-```
-
-#### 启动节点
-
-> geth --dev console 2>> geth-log
+客户端节点（应用程序/SDK/命令行工具）
+客户端或应用程序代表由最终用户操作的实体，它必须连接到某一个Peer节点或者排序服务节点上与区块链网络进行通信。客户端向背书节点（Endorser Peer）提交交易提案(Proposal)，当收集到足够背书后，向排序服务节点广播交易，进行排序，生成区块
 
 
-重新打开一个窗口执行下面命令可以查看日志
 
->  tail -f geth-log
+### Fabric网络（Network）
+在Fabric网络中，Peer和Orderer采用gRPC（Google RPC）对外提供远程服务，供客户端进行调用。网络中的节点之间通过Gossip 协议来进行状态同步和分发。 Gossip 协议是P2P 领域的常见协议，用于进行网络内多个节点之间的数据分发或信息交换。由于其设计简单，容易实现，同时容错性比较高，而被广泛应用到了许多分布式系。
+
+Gossip 协议的基本思想十分简单，数据发送方从网络中随机选取若干节点，将数据发送过去，接收方重复这一过程（往往只选择发送方之外节点进行传播）。这一过程持续下去，网络中所有节点最终（时间复杂度为节点总个数的对数）都会达到一致。数据传输的方向可以是发送方发送或获取方拉取。
+
+与其它区块链节点一样，一个完整的区块链网络中各个节点会有不同分工。我们先看看比特币网络。每个比特币节点都是路由、区块链数据库、挖矿、钱包服务的功能集合，一个全节点包含钱包、矿工、完整区块链、网络路由节点。
 
 
-#### Geth命令测试
-用户命令测试
-```
-#返回钱包管理的账户地址列表  
-#返回示例：["0x3138e3722fb4280cb67f6e858108136bfa1c9160"]
-eth.accounts
+钱包节点一般是运行在PC和手机上的轻节点。钱包是比特币的重要组成部分，与大部分人理解不一样的是，钱包里没有比特币，只有比特币私钥。我们在钱包里看到的余额是钱包根据私钥计算得到的。在比特币等公链中，私钥是有用户保管的，一旦私钥丢失就意味着该用户的代币丢失。据说现在由于私钥保护不善，有300多万枚比特币已经丢失。
+挖矿节点就是我们俗称的矿机。挖矿节点通过运行在特殊硬件设备上的工作量证明（proof-of-work）算法，以相互竞争的方式创建新的区块。一些挖矿节点同时也是全节点，保有区块链的完整拷贝；还有一些参与矿池挖矿的节点是轻量级节点，它们必须依赖矿池服务器维护的全节点进行工作。
 
-#创建账户地址，参数为账户锁定密码，在转账前需要先解锁账户
-#我们把这个命令运行两次，创建两个地址，加上默认的，一共有了三个账户地址
-personal.newAccount('111111')
-personal.newAccount('111111')
+目前，Fabric网络中存在以下4 种不同种类的服务节点，彼此协作完成整个区块链系统的功能。对网络中节点角色进行解耦是Fabric 设计中的一大创新，这也是联盟链场景下的特殊需求和环境所决定。
 
-#为账户设置别名，方便命令输入
-user1=eth.accounts[0]
-user2=eth.accounts[1]
+- 背书节点（ Endorser ）：负责对交易的提案（ proposal ）进行验证并模拟交易执行；
 
-#查看地址user1余额,这个地址是测试链默认开通的一个地址，里面初始化有很多币
-#我们创建的另外两个地址余额未0
-eth.getBalance(user1)
+- 提交节点（ Committer ）： 负责在接受交易结果前再次检查合法性，接受合法交易对账本的修改，并写入区块链结构；
 
-#查看区块高度，现在为0
-eth.blockNumber
+- 排序节点（ Orderer ） ： 对所有发往网络中的交易进行排序，将排序后的交易按照配置中的约定整理为区块，之后提交给确认节点进行处理；
 
-#转账测试，首先解锁账号user1
-#命令运行后要求输入解锁密码，直接回车，默认账号锁定密码为空，返回true成功
-personal.unlockAccount(user1)
+- 证书节点（ CA ）： 负责对网络中所有的证书进行管理，提供标准的PKI服务。
 
-#从user1向user2转账3个以太币
-#命令运行后，提交交易立马回出发挖矿
-eth.sendTransaction({from:user1,to:user2,value:web3.toWei(3,"ether")})
+**通常情况下，除了用户节点，Fabric网络所有的全节点都具备Commiter功能，部分节点具有Endorser、Orderer功能。锚节点是一种外部可发现的节点，配置了对外服务的端口，如果某个Peer节点被配置成锚节点，这就意味着该节点可以被Orderer节点和其它任何节点发现。证书节点是一个相对独立证书管理机构，也可以由第三方证书机构来承担这个角色。**
 
-#查看区块高度，这时高度为1
-eth.blockNumber
-#挖矿测试
-#geth启动后，自动启动挖矿，这时运行miner.start()，返回为null 无交易的时候#不挖矿，当有交易时自动会触发挖矿流程
+### Fabric共识（Orderer）
 
-#我们可以先停止挖矿
-miner.stop()
 
-#提交交易，这时候只提交，查看账户余额，但是未确认
-eth.sendTransaction({from:user1,to:user2,value:web3.toWei(3,"ether")})
+在Fabric中，广义的共识机制包含背书、排序和验证三个环节，狭义的共识指的是排序。
 
-#启动挖矿，确认交易，再次查看账户余额
-miner.start()
+所谓背书就是相关组织对交易的认可，在Fabric中是相关节点对交易进行签名。在比特币、以太坊等区块链上，网络上所有节点都可以生成有效的交易。而Fabric更符合真实世界的情况，交易验证由网络中业务相关方进行验证。对于一个链码交易来说，背书策略是在链码实例化的时候指定的，一笔有效交易必须是背书策略相关组织签名后才能生效。
 
-#那么挖矿奖励去哪儿了？查看矿工地址
-eth.coinbase
+举个例子，车辆交易就必须由买卖双方共同签署才能生效。背书策略的设计更符合真实世界情况。
 
-#设置矿工地址
-miner.setEtherbase(eth.coinbase)
-```
+排序服务通常由排序节点来提供，用来对全网交易达成一致顺序。排序服务只负责对交易顺序达成一致，这就有效避免了整个网络瓶颈，而且排序节点也很容易横向扩展，以提高整个网络的效率。排序服务目前支持Kafka和Raft两种。
 
-```
-cuiran@cuiran:~/ethereum$     geth --dev console 2>> geth-log
-Welcome to the Geth JavaScript console!
+Fabric1.4.1中提供了Raft共识机制。Raft共识机制属于非拜占庭的共识机制，使用了领导者和跟随者（leader and follower）模型，当一个leader被选出，日志信息会从Leader向Follower单向复制。Raft比Kafka更容易管理，在设计上允许所有的节点都可以成为Orderer节点，相比Kafka更去中心化。
 
-instance: Geth/v1.7.3-stable/darwin-amd64/go1.9.3
-coinbase: 0xdfa0120507a5d38a9d5f82d2447e635ac3db66a9
-at block: 0 (Thu, 01 Jan 1970 08:00:00 CST)
- datadir:
- modules: admin:1.0 clique:1.0 debug:1.0 eth:1.0 miner:1.0 net:1.0 personal:1.0 rpc:1.0 shh:1.0 txpool:1.0 web3:1.0
+当然Fabric可插拔架构也允许根据业务需要设计符合拜占庭的共识机制，比如Practical Byzantine Fault Tolerance (PBFT ），但这种共识机制的性能往往比较差。
 
-> eth.accounts
-["0xdfa0120507a5d38a9d5f82d2447e635ac3db66a9"]
-> personal.newAccount('123456')
-"0x3b9dfdcc0ab06ecb94ee5997346b5b5d5648625b"
-> eth.accounts
-["0xdfa0120507a5d38a9d5f82d2447e635ac3db66a9", "0x3b9dfdcc0ab06ecb94ee5997346b5b5d5648625b"]
-> user1
-ReferenceError: 'user1' is not defined
-    at <anonymous>:1:1
+验证是对排序后的交易提交到账本之前最终的检查。检查的内容包含交易结构的合法性、交易背书签名是否符合背书策略等。
 
-> user1=eth.accounts[0]
-"0xdfa0120507a5d38a9d5f82d2447e635ac3db66a9"
-> user2=eth.accounts[1]
-"0x3b9dfdcc0ab06ecb94ee5997346b5b5d5648625b"
-> user1
-"0xdfa0120507a5d38a9d5f82d2447e635ac3db66a9"
-> user2
-"0x3b9dfdcc0ab06ecb94ee5997346b5b5d5648625b"
-> personal.unlockAccount(user2,'123456')
-true
-> eth.getBalance(user1)
-1.15792089237316195423570985008687907853269984665640564039457584007913129639927e+77
-> eth.getBalance(user2)
-0
-> miner
-{
-  getHashrate: function(),
-  setEtherbase: function(),
-  setExtra: function(),
-  setGasPrice: function(),
-  start: function(),
-  stop: function()
-}
-> miner.start()
-null
-> miner.stop()
-true
-> eth.getBalance(user1)
-1.15792089237316195423570985008687907853269984665640564039457584007913129639927e+77
-> eth.sendTransaction({from:user1,to:user2,value:8})
-"0x37fd82a8f3f783599fb64f7f860b834a65ebae347968a454140b8ff37a652732"
-> eth.getBalance(user2)
-0
-> miner.start()
-null
-> miner.stop()
-true
-> miner.stop()
-true
-> eth.sendTransaction({from:user1,to:user2,value:8})
-"0x64ed9fcaa87ac331526d7f41f281515c90c5c261de37b7dd982d02639b42e40c"
-> miner.start()
-null
-> eth.coinbase
-"0xdfa0120507a5d38a9d5f82d2447e635ac3db66a9"
-> miner.setE
-miner.setEtherbase miner.setExtra
-> miner.setEtherbase(eth.coinbase)
-true
-> miner.stop()
-true
-> eth.getBalance(user2)
-16
-> eth.blockNumber
-2
-> eth.sendTransaction({from:user1,to:user2,value:9})
-"0x7d9d5792b99eedd662d3629f3cb792b15313c61e145bf8c50c9f7728b6b42757"
-> eth.blockNumber
-2
-> eth.getBalance(user2)
-16
-> miner.start()
-null
-> miner.stop()
-true
-> eth.getBalance(user2)
-25
->
-```
+### Fabric账本（Ledger）
+在第一章节时我们通过比特币讲解过交易、区块、区块链这些概念，这里我们通过Fabric复习一下。在比特币中，交易信息里只包含了货币相关信息，在Fabric中交易（ transaction ）可以存储相关业务信息，比如一个苹果、一条鱼等等。区块（ block ）是一组排序后的交易集合，将区块通过密码算法连接起来就是区块链。
+
+账本（ ledger ）对区块链结构进行了进一步的延伸，是Fabric 中十分关键的一个结构。账本包含状态数据库（World State）和历史数据库。状态数据库记录的是变更记录的最新结果，方便查询，历史数据库记录的是区块链结构。在数据库选型上，为了方便查询，状态数据库会使用CouchDB,历史数据库会使用LevelDB。
+
+在Fabric中，通道隔离了交易，因此每个通道都拥有独立账本。
+
+### Fabric链码（Chaincode）
+智能合约在Fabric中也被称为链码（chaincode）。
+
+目前超级账本Fabric 项目中提供了用户链码和系统链码。用户链码运行在单独的容器中，提供对上层应用的支持。系统链码则嵌入在系统内，提供对系统进行配置、管理的支持。
+
+一般所谈的链码为用户链码，用户通过链码相关的API 编写用户链码，即可对账本中状态进行更新操作。系统链码有以下五个合约：
+
+- Configuration System Chaincode (CSCC) CSCC 管理peer上通道相关的信息以及执行通道配置交易。
+
+- Life Cycle System Chaincode (LSCC) LSCC 用于管理链码的生命周期——在peer上安装链码、在通道上实例化和升级链码、用户从运行中的链码获取信息。
+
+- Query System Chaincode (QSCC) 运行在所有Peer上，提供账区块查询、交易查询等API。
+
+- Endorser System Chaincode (ESCC) ESCC 由背书节点调用，对一个交易响应进行密码签名。
+
+- Validator System Chaincode (VSCC) VSCC 由记账节点调用, 包括检查背书策略和读写集版本。
+
+链码经过安装和实例化操作后，即可被调用。在安装时候，需要指定具体安装到哪个Peer 节点，实例化时还需要指定通道内及背书策略。链码之间还可以通过互相调用，创建更灵活的应用逻辑。Fabric 目前主要支持基于Go 语言、Java、Node.js。

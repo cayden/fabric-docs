@@ -1,119 +1,184 @@
 Hyperledger Fabric网络体验
 =========================================
-### 背景
-区块链是什么？一句话，它是一种特殊的（非关系型）分布式数据库，这种数据库只能做插入和查找操作，并且没有管理员。
+### 先决条件
+在我们开始之前，如果您还没有这样做，您可能希望检查是否在要开发区块链应用程序和/或运行Hyperledger Fabric的平台上安装了以下所有前提条件。这里采用的是CentOS 7.6
 
-首先，区块链的主要作用是储存信息。任何需要保存的信息，都可以写入区块链，也可以从里面读取，所以它是数据库。
+```
+[root@VM_0_9_centos ~]#  cat /etc/redhat-release
+CentOS Linux release 7.6.1810 (Core)
+```
 
-其次，任何人都可以架设服务器，加入区块链网络，成为一个节点。区块链的世界里面，没有中心节点，每个节点都是平等的，都保存着整个数据库。你可以向任何一个节点，写入/读取数据，因为所有节点最后都会同步，保证区块链一致。
-### 区块链发展史
-<div align=center>
+#### 安装Git
+如果尚未安装最新版本的git，或者如果您在运行curl命令时遇到问题，请下载它。
 
-![区块链发展史](../images/5e023267a38c0.png)
-</div>
+>yum install -y git
 
-### 区块链1.0 时代
-#### 前世：
+#### 安装cURL
+如果尚未安装cURL工具的最新版本，或者从文档中运行curl命令时遇到错误，请下载它。
 
-**密码朋克（Cypherpunk）**
+>yum install -y curl
 
-"密码朋克"是一套加密的电子邮件组，这个组里面的成员有：
+#### 安装wget
 
-维基解密创始人 阿桑奇
+>yum install -y wget
 
-BT下载的作者 布莱姆-科恩
+#### Docker和Docker Compose
 
-www万维网的发明者蒂姆伯纳斯-李
+您将需要在Hyperledger Fabric上进行操作或进行开发的平台上安装以下组件：
 
-智能合约概念提出者：尼克萨博
+- MacOSX，* nix或Windows 10：Docker需要 Docker 17.06.2-ce或更高版本。
+- Windows的旧版本：Docker Toolbox-同样，需要Docker版本Docker 17.06.2-ce或更高。
 
-Facebook创始人：肖恩帕克
+通过执行docker --version 查看版本
 
-#### 比特币之父：中本聪
+```
+[root@VM_0_9_centos ~]# docker version
+Client: Docker Engine - Community
+ Version:           19.03.5
+ API version:       1.40
+ Go version:        go1.12.12
+ Git commit:        633a0ea
+ Built:             Wed Nov 13 07:25:41 2019
+ OS/Arch:           linux/amd64
+ Experimental:      false
 
-在密码朋克组里面，讨论的话题有数学、加密技术、计算机技术、数字货币等等，尤其是关于数字货币的讨论，给了中本聪很多的灵感和技术的铺垫。
+Server: Docker Engine - Community
+ Engine:
+  Version:          19.03.5
+  API version:      1.40 (minimum version 1.12)
+  Go version:       go1.12.12
+  Git commit:       633a0ea
+  Built:            Wed Nov 13 07:24:18 2019
+  OS/Arch:          linux/amd64
+  Experimental:     false
+ containerd:
+  Version:          1.2.10
+  GitCommit:        b34a5c8af56e510852c35414db4c1f4fa6172339
+ runc:
+  Version:          1.0.0-rc8+dev
+  GitCommit:        3e425f80a8c931f88e6d94a8c831b9d5aa481657
+ docker-init:
+  Version:          0.18.0
+  GitCommit:        fec3683
+  ```
+### Fabric网络体验
+#### 1、下载 Fabric samples
 
-**2008年，中本聪发布比特币白皮书**
-
-2008年，美国发生次贷危机，进而引发全球性的金融危机，各国法定货币大幅贬值，此时，一个自称中本聪的人或者组织在网络上发表了一篇<<比特币：一种点对点的电子现金系统>>论文。现在称区块链项目相关论文为白皮书。这篇白皮书描述了一个全新的数字货币系统-比特币。比特币解决了在完全没有中心机构的情况下，总量恒定的货币发行与流通问题。通过比特币系统进行转账， 公开透明。可以放心的将比特币转给地球另一端的人。每一笔的转账信息都会被全网记录，比特币白皮书的问世标志着比特币的底层技术-区块链的诞生。
-
-**2009年，比特币创世区块诞生**
-
-在区块链系统中，第一个区块称之为创世区块，比特币创世区块的诞生也标志着以区块链为底层技术的比特币系统真正的落地。
-
-**2010年，10000个比特币买了一个披萨**
-
- 这标志着比特币真正进入流通领域，行驶货币职能 。现在看来，这是世界上最贵的一披萨，现在比特币价格在3w人民币上下，10000个比特币价值3亿人民币。
-
-在随后的几年中，比特币得到比较快速的发展，越来越多的组织机构开始接受比特币支付，并出现了很多类似比特币的竞争品，如莱特币、无限币、夸克币、泽塔币、元宝币、银通币...,这些都是在比特币代码上稍作修改而成，应用领域也是和比特币一样，主要在货币与支付领域。
-
-以上称之为区块链1.0时代。
-
-
-#### 区块链1.0 内容框架
-
-区块链 1.0 主要是以数字货币
-<div align=center>
-
-![区块链发展史](../images/5e0232b49e201.png)
-</div>
-
-#### 区块链 1.0 架构
-前端工具这，最明显就是钱包工具，提供用户管理自己账户地址和余额，浏览器用来查询当前区块链发生的数据情况，高度 区块数，交易数等
-
-
-
-<div align=center>
-
-![区块链 1.0 架构](../images/5e0232e4bd898.png)
-</div>
-### 区块链2.0
-区块链2.0是指智能合约,智能合约与货币相结合,对金融领域提供了更加广泛的应用场景.
-区块链2.0的代表是'以太坊'.以太坊是一个平台,它提供了各种模块让用户用以搭建应用.平台之上的应用,其实也就是合约.这是以太坊技术的核心。
+首先将fabric-samples clone到本地
 
 
-<div align=center>
+```bash
+git clone https://github.com/hyperledger/fabric-samples
 
-![区块链 2.0 ](../images/5e0233467ec1e.png)
-</div>
+```
 
-### 以太坊
-以太坊，Ethereum是一个分布式的计算机，有许多的节点，其中的每一个节点，都会执行字节码（也就是所谓智能合约），然后把结果存在区块链上。由于整个网络是分布式的，且应用就是一个个的状态组成，存储了状态就有了服务；所以它就能永不停机，没有一个中心化的结点（没有任何一个节点说了算，去中心化的），任何第三方不能干预。
-
-如果想做更深的了解，可以先读一下[以太坊白皮书](https://github.com/ethereum/wiki/wiki/White-Paper "以太坊白皮书")，或者看下这个视频，[25分钟理解以太坊](https://www.youtube.com/watch?v=66SaEDzlmP4 "25分钟理解以太坊")。（译者注：以太坊入门，确实没有什么好的办法，就是看白皮书最好，最快）
-#### 区块链2.0 架构
-与1.0相比，支持智能合约
-
-<div align=center>
-
-![区块链 2.0 架构](../images/5e02336730623.png)
-</div>
-
-### 区块链3.0
-区块链3.0是指区块链在金融行业之外的各行业的应用场景.能够满足更加复杂的商业逻辑.区块链3.0被称为互联网技术之后的新一代技术创新,足以推动更大的产业改革.
 
 <div align=center>
 
 
-![区块链 3.0](../images/5e0233aaddb1c.png)
+![fabric-samples](../images/20200325135321.png)
 </div>
 
-#### 区块链3.0 架构
-增加了网关控制，增加对安全保密的需求支持和数据审计加强对数据的可靠性管理
+#### 2、生成秘钥及相关交易信息
+cd到fabric-samples/first-network目录下，运行
+
+```bash
+./byfn.sh  generate
+
+```
+
+
+该命令是用于生成fabric网络中的组件秘钥信息以及初始的交易信息。包括：ordering服务和节点的秘钥信息(msp和tls的证书)，ordering服务的创世块，管道配置交易信息(channel.tx)，和锚点的更新交易信息。
+
+命令运行完成后，可以看到first-network下的crypto-config 和channel-artifacts文件夹下都新生成了一些文件。Channel-artifacts下是新生成的创世块和管道交易信息，以及锚点更新交易信息。Crypto-config里则是ordering 服务和节点相关的秘钥信息。
+
+#### 3、启动网络
+
+```bash
+./byfn.sh up
+
+```
+
+该命令启动了一个默认设置的网络，这些默认的设置包括：
+
+- channel名字为myChannel
+
+- cli的timeout时间为10s
+
+- 延迟为3s
+
+- 使用的docker-compose-file为docker-compose-cli.yaml
+
+- 数据库类型为goleveldb
+
+- 语言为go语言
+
+- 使用最新的镜像启动网络
+
+完整的命令如下：
+
+```bash
+./byfn.sh up –c myChannel –t 10 –d 3 –f docker-compose-cli.yaml –s goleveldb –l go –i latest
+```
+
+#### 4、启动的流程为：
+
+1)、创建四个节点
+
+2)、创建了一个ordering服务
+
+3)、创建了一个cli服务，为了下面可以使用 docker exec -it bash 进入到各个容器内。
+
+4)、创建一个channel
+  ```
+ peer channel create -o orderer.example.com:7050 -c mychannel -f ./channel-artifacts/channel.tx --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+   ```
+
+
+5)、分别把四个节点加入到这个channel中
+  ```
+peer channel join -b mychannel.block
+  ```
+ 6)、之后更新这些加入到myChannel的节点所属的ordering服务已经msp信息
+  ```
+peer channel update -o orderer.example.com:7050 -c mychannel -f ./channel-artifacts/Org2MSPanchors.tx --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+   ```
+
+
+7)、安装默认的chaincode到peer0.org2节点上
+  ```
+peer chaincode install -n mycc -v 1.0 -l golang -p github.com/chaincode/chaincode_example02/go/
+   ```
+
+
+8)、实例化chaincode
+
+ ```
+peer chaincode instantiate -o orderer.example.com:7050 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n mycc -l golang -v 1.0 -c '{"Args":["init","a","100","b","200"]}' -P 'OR    ('\''Org1MSP.peer'\'','\''Org2MSP.peer'\'')'
+  ```
+
+
+
+9)、最后做了一步对链码的验证工作。
+
+查询交易
+  ```
+peer chaincode query -C mychannel -n mycc -c '{"Args":["query","a"]}'
+  ```
+调用交易
+  ```
+peer chaincode invoke -o orderer.example.com:7050 --tls true --cafile/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n mycc -c'{"Args":["invoke","a","b","10"]}'
+
+   ```
+
+到这里我们整个网络已经启动完成。这个时候可以看下运行的容器情况，通过docker ps可以查看到相关容器信息
+
 <div align=center>
 
 
-![区块链3.0 架构](../images/5e0233d215afe.png)
+![容器信息](../images/20200325140435.png)
 </div>
 
-### 技术人员的机会
 
-如何转型做区块链技术？
 
-当前对区块链技术人员有两方面的需求：
-
-- （1）区块链底层开发人员
-- （2）智能合约开发人员
-- （3）掌握区块链的技术原理
-
-一般来讲，企业在做区块链应用时会选择一个现有的、比较成熟的区块链系统作为研究对象，在此基础上构建自己的区块链底层系统，或者是基于智能合约的去中心化应用，当前比较成熟稳定、被拿来做研究对象的区块链系统主要有两个：**超级账本和以太坊**
+至此，一个简易的fabric网络就搭建成功了。

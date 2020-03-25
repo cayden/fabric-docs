@@ -92,24 +92,20 @@
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">第一章、Hyperledger Fabric 架构详解</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="01_introdutce.html">1. Hyperledger 项目简介</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">2. Hyperledger Fabric网络体验</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id1">2.1. 背景</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id2">2.2. 区块链发展史</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id3">2.3. 区块链1.0 时代</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#id4">前世：</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id5">比特币之父：中本聪</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id6">区块链1.0 内容框架</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id7">区块链 1.0 架构</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">2.1. 先决条件</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#git">安装Git</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#curl">安装cURL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#wget">安装wget</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dockerdocker-compose">Docker和Docker Compose</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#id8">2.4. 以太坊</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#id9">区块链2.0 架构</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fabric">2.2. Fabric网络体验</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#fabric-samples">1、下载 Fabric samples</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2">2、生成秘钥及相关交易信息</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id3">3、启动网络</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id4">4、启动的流程为：</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#id10">2.5. 区块链3.0</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#id11">区块链3.0 架构</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#id12">2.6. 技术人员的机会</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="03_system_architecture.html">3. Hyperledger Fabric系统架构</a></li>
@@ -190,84 +186,149 @@
   <div class="section" id="hyperledger-fabric">
 <h1><span class="section-number">2. </span>Hyperledger Fabric网络体验<a class="headerlink" href="#hyperledger-fabric" title="永久链接至标题">¶</a></h1>
 <div class="section" id="id1">
-<h2><span class="section-number">2.1. </span>背景<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h2>
-<p>区块链是什么？一句话，它是一种特殊的（非关系型）分布式数据库，这种数据库只能做插入和查找操作，并且没有管理员。</p>
-<p>首先，区块链的主要作用是储存信息。任何需要保存的信息，都可以写入区块链，也可以从里面读取，所以它是数据库。</p>
-<p>其次，任何人都可以架设服务器，加入区块链网络，成为一个节点。区块链的世界里面，没有中心节点，每个节点都是平等的，都保存着整个数据库。你可以向任何一个节点，写入/读取数据，因为所有节点最后都会同步，保证区块链一致。</p>
+<h2><span class="section-number">2.1. </span>先决条件<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h2>
+<p>在我们开始之前，如果您还没有这样做，您可能希望检查是否在要开发区块链应用程序和/或运行Hyperledger Fabric的平台上安装了以下所有前提条件。这里采用的是CentOS 7.6</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">root</span><span class="nd">@VM_0_9_centos</span> <span class="o">~</span><span class="p">]</span><span class="c1">#  cat /etc/redhat-release</span>
+<span class="n">CentOS</span> <span class="n">Linux</span> <span class="n">release</span> <span class="mf">7.6</span><span class="o">.</span><span class="mi">1810</span> <span class="p">(</span><span class="n">Core</span><span class="p">)</span>
+</pre></div>
 </div>
-<div class="section" id="id2">
-<h2><span class="section-number">2.2. </span>区块链发展史<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
-<div align=center><p><img alt="区块链发展史" src="../_images/5e023267a38c0.png" /></p>
-</div></div>
-<div class="section" id="id3">
-<h2><span class="section-number">2.3. </span>区块链1.0 时代<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
-<div class="section" id="id4">
-<h3>前世：<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h3>
-<p><strong>密码朋克（Cypherpunk）</strong></p>
-<p>&quot;密码朋克&quot;是一套加密的电子邮件组，这个组里面的成员有：</p>
-<p>维基解密创始人 阿桑奇</p>
-<p>BT下载的作者 布莱姆-科恩</p>
-<p>www万维网的发明者蒂姆伯纳斯-李</p>
-<p>智能合约概念提出者：尼克萨博</p>
-<p>Facebook创始人：肖恩帕克</p>
+<div class="section" id="git">
+<h3>安装Git<a class="headerlink" href="#git" title="永久链接至标题">¶</a></h3>
+<p>如果尚未安装最新版本的git，或者如果您在运行curl命令时遇到问题，请下载它。</p>
+<blockquote>
+<div><p>yum install -y git</p>
+</div></blockquote>
 </div>
-<div class="section" id="id5">
-<h3>比特币之父：中本聪<a class="headerlink" href="#id5" title="永久链接至标题">¶</a></h3>
-<p>在密码朋克组里面，讨论的话题有数学、加密技术、计算机技术、数字货币等等，尤其是关于数字货币的讨论，给了中本聪很多的灵感和技术的铺垫。</p>
-<p><strong>2008年，中本聪发布比特币白皮书</strong></p>
-<p>2008年，美国发生次贷危机，进而引发全球性的金融危机，各国法定货币大幅贬值，此时，一个自称中本聪的人或者组织在网络上发表了一篇&lt;&lt;比特币：一种点对点的电子现金系统&gt;&gt;论文。现在称区块链项目相关论文为白皮书。这篇白皮书描述了一个全新的数字货币系统-比特币。比特币解决了在完全没有中心机构的情况下，总量恒定的货币发行与流通问题。通过比特币系统进行转账， 公开透明。可以放心的将比特币转给地球另一端的人。每一笔的转账信息都会被全网记录，比特币白皮书的问世标志着比特币的底层技术-区块链的诞生。</p>
-<p><strong>2009年，比特币创世区块诞生</strong></p>
-<p>在区块链系统中，第一个区块称之为创世区块，比特币创世区块的诞生也标志着以区块链为底层技术的比特币系统真正的落地。</p>
-<p><strong>2010年，10000个比特币买了一个披萨</strong></p>
-<p>这标志着比特币真正进入流通领域，行驶货币职能 。现在看来，这是世界上最贵的一披萨，现在比特币价格在3w人民币上下，10000个比特币价值3亿人民币。</p>
-<p>在随后的几年中，比特币得到比较快速的发展，越来越多的组织机构开始接受比特币支付，并出现了很多类似比特币的竞争品，如莱特币、无限币、夸克币、泽塔币、元宝币、银通币...,这些都是在比特币代码上稍作修改而成，应用领域也是和比特币一样，主要在货币与支付领域。</p>
-<p>以上称之为区块链1.0时代。</p>
+<div class="section" id="curl">
+<h3>安装cURL<a class="headerlink" href="#curl" title="永久链接至标题">¶</a></h3>
+<p>如果尚未安装cURL工具的最新版本，或者从文档中运行curl命令时遇到错误，请下载它。</p>
+<blockquote>
+<div><p>yum install -y curl</p>
+</div></blockquote>
 </div>
-<div class="section" id="id6">
-<h3>区块链1.0 内容框架<a class="headerlink" href="#id6" title="永久链接至标题">¶</a></h3>
-<p>区块链 1.0 主要是以数字货币</p>
-<div align=center><p><img alt="区块链发展史" src="../_images/5e0232b49e201.png" /></p>
-</div></div>
-<div class="section" id="id7">
-<h3>区块链 1.0 架构<a class="headerlink" href="#id7" title="永久链接至标题">¶</a></h3>
-<p>前端工具这，最明显就是钱包工具，提供用户管理自己账户地址和余额，浏览器用来查询当前区块链发生的数据情况，高度 区块数，交易数等</p>
-<div align=center><p><img alt="区块链 1.0 架构" src="../_images/5e0232e4bd898.png" /></p>
+<div class="section" id="wget">
+<h3>安装wget<a class="headerlink" href="#wget" title="永久链接至标题">¶</a></h3>
+<blockquote>
+<div><p>yum install -y wget</p>
+</div></blockquote>
 </div>
-### 区块链2.0
-区块链2.0是指智能合约,智能合约与货币相结合,对金融领域提供了更加广泛的应用场景.
-区块链2.0的代表是'以太坊'.以太坊是一个平台,它提供了各种模块让用户用以搭建应用.平台之上的应用,其实也就是合约.这是以太坊技术的核心。<div align=center><p><img alt="区块链 2.0 " src="../_images/5e0233467ec1e.png" /></p>
-</div></div>
-</div>
-<div class="section" id="id8">
-<h2><span class="section-number">2.4. </span>以太坊<a class="headerlink" href="#id8" title="永久链接至标题">¶</a></h2>
-<p>以太坊，Ethereum是一个分布式的计算机，有许多的节点，其中的每一个节点，都会执行字节码（也就是所谓智能合约），然后把结果存在区块链上。由于整个网络是分布式的，且应用就是一个个的状态组成，存储了状态就有了服务；所以它就能永不停机，没有一个中心化的结点（没有任何一个节点说了算，去中心化的），任何第三方不能干预。</p>
-<p>如果想做更深的了解，可以先读一下<a class="reference external" href="https://github.com/ethereum/wiki/wiki/White-Paper">以太坊白皮书</a>，或者看下这个视频，<a class="reference external" href="https://www.youtube.com/watch?v=66SaEDzlmP4">25分钟理解以太坊</a>。（译者注：以太坊入门，确实没有什么好的办法，就是看白皮书最好，最快）</p>
-<div class="section" id="id9">
-<h3>区块链2.0 架构<a class="headerlink" href="#id9" title="永久链接至标题">¶</a></h3>
-<p>与1.0相比，支持智能合约</p>
-<div align=center><p><img alt="区块链 2.0 架构" src="../_images/5e02336730623.png" /></p>
-</div></div>
-</div>
-<div class="section" id="id10">
-<h2><span class="section-number">2.5. </span>区块链3.0<a class="headerlink" href="#id10" title="永久链接至标题">¶</a></h2>
-<p>区块链3.0是指区块链在金融行业之外的各行业的应用场景.能够满足更加复杂的商业逻辑.区块链3.0被称为互联网技术之后的新一代技术创新,足以推动更大的产业改革.</p>
-<div align=center><p><img alt="区块链 3.0" src="../_images/5e0233aaddb1c.png" /></p>
-</div><div class="section" id="id11">
-<h3>区块链3.0 架构<a class="headerlink" href="#id11" title="永久链接至标题">¶</a></h3>
-<p>增加了网关控制，增加对安全保密的需求支持和数据审计加强对数据的可靠性管理</p>
-<div align=center><p><img alt="区块链3.0 架构" src="../_images/5e0233d215afe.png" /></p>
-</div></div>
-</div>
-<div class="section" id="id12">
-<h2><span class="section-number">2.6. </span>技术人员的机会<a class="headerlink" href="#id12" title="永久链接至标题">¶</a></h2>
-<p>如何转型做区块链技术？</p>
-<p>当前对区块链技术人员有两方面的需求：</p>
+<div class="section" id="dockerdocker-compose">
+<h3>Docker和Docker Compose<a class="headerlink" href="#dockerdocker-compose" title="永久链接至标题">¶</a></h3>
+<p>您将需要在Hyperledger Fabric上进行操作或进行开发的平台上安装以下组件：</p>
 <ul class="simple">
-<li><p>（1）区块链底层开发人员</p></li>
-<li><p>（2）智能合约开发人员</p></li>
-<li><p>（3）掌握区块链的技术原理</p></li>
+<li><p>MacOSX，* nix或Windows 10：Docker需要 Docker 17.06.2-ce或更高版本。</p></li>
+<li><p>Windows的旧版本：Docker Toolbox-同样，需要Docker版本Docker 17.06.2-ce或更高。</p></li>
 </ul>
-<p>一般来讲，企业在做区块链应用时会选择一个现有的、比较成熟的区块链系统作为研究对象，在此基础上构建自己的区块链底层系统，或者是基于智能合约的去中心化应用，当前比较成熟稳定、被拿来做研究对象的区块链系统主要有两个：<strong>超级账本和以太坊</strong></p>
+<p>通过执行docker --version 查看版本</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">root</span><span class="nd">@VM_0_9_centos</span> <span class="o">~</span><span class="p">]</span><span class="c1"># docker version</span>
+<span class="n">Client</span><span class="p">:</span> <span class="n">Docker</span> <span class="n">Engine</span> <span class="o">-</span> <span class="n">Community</span>
+ <span class="n">Version</span><span class="p">:</span>           <span class="mf">19.03</span><span class="o">.</span><span class="mi">5</span>
+ <span class="n">API</span> <span class="n">version</span><span class="p">:</span>       <span class="mf">1.40</span>
+ <span class="n">Go</span> <span class="n">version</span><span class="p">:</span>        <span class="n">go1</span><span class="o">.</span><span class="mf">12.12</span>
+ <span class="n">Git</span> <span class="n">commit</span><span class="p">:</span>        <span class="mi">633</span><span class="n">a0ea</span>
+ <span class="n">Built</span><span class="p">:</span>             <span class="n">Wed</span> <span class="n">Nov</span> <span class="mi">13</span> <span class="mi">07</span><span class="p">:</span><span class="mi">25</span><span class="p">:</span><span class="mi">41</span> <span class="mi">2019</span>
+ <span class="n">OS</span><span class="o">/</span><span class="n">Arch</span><span class="p">:</span>           <span class="n">linux</span><span class="o">/</span><span class="n">amd64</span>
+ <span class="n">Experimental</span><span class="p">:</span>      <span class="n">false</span>
+
+<span class="n">Server</span><span class="p">:</span> <span class="n">Docker</span> <span class="n">Engine</span> <span class="o">-</span> <span class="n">Community</span>
+ <span class="n">Engine</span><span class="p">:</span>
+  <span class="n">Version</span><span class="p">:</span>          <span class="mf">19.03</span><span class="o">.</span><span class="mi">5</span>
+  <span class="n">API</span> <span class="n">version</span><span class="p">:</span>      <span class="mf">1.40</span> <span class="p">(</span><span class="n">minimum</span> <span class="n">version</span> <span class="mf">1.12</span><span class="p">)</span>
+  <span class="n">Go</span> <span class="n">version</span><span class="p">:</span>       <span class="n">go1</span><span class="o">.</span><span class="mf">12.12</span>
+  <span class="n">Git</span> <span class="n">commit</span><span class="p">:</span>       <span class="mi">633</span><span class="n">a0ea</span>
+  <span class="n">Built</span><span class="p">:</span>            <span class="n">Wed</span> <span class="n">Nov</span> <span class="mi">13</span> <span class="mi">07</span><span class="p">:</span><span class="mi">24</span><span class="p">:</span><span class="mi">18</span> <span class="mi">2019</span>
+  <span class="n">OS</span><span class="o">/</span><span class="n">Arch</span><span class="p">:</span>          <span class="n">linux</span><span class="o">/</span><span class="n">amd64</span>
+  <span class="n">Experimental</span><span class="p">:</span>     <span class="n">false</span>
+ <span class="n">containerd</span><span class="p">:</span>
+  <span class="n">Version</span><span class="p">:</span>          <span class="mf">1.2</span><span class="o">.</span><span class="mi">10</span>
+  <span class="n">GitCommit</span><span class="p">:</span>        <span class="n">b34a5c8af56e510852c35414db4c1f4fa6172339</span>
+ <span class="n">runc</span><span class="p">:</span>
+  <span class="n">Version</span><span class="p">:</span>          <span class="mf">1.0</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">rc8</span><span class="o">+</span><span class="n">dev</span>
+  <span class="n">GitCommit</span><span class="p">:</span>        <span class="mf">3e425</span><span class="n">f80a8c931f88e6d94a8c831b9d5aa481657</span>
+ <span class="n">docker</span><span class="o">-</span><span class="n">init</span><span class="p">:</span>
+  <span class="n">Version</span><span class="p">:</span>          <span class="mf">0.18</span><span class="o">.</span><span class="mi">0</span>
+  <span class="n">GitCommit</span><span class="p">:</span>        <span class="n">fec3683</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="fabric">
+<h2><span class="section-number">2.2. </span>Fabric网络体验<a class="headerlink" href="#fabric" title="永久链接至标题">¶</a></h2>
+<div class="section" id="fabric-samples">
+<h3>1、下载 Fabric samples<a class="headerlink" href="#fabric-samples" title="永久链接至标题">¶</a></h3>
+<p>首先将fabric-samples clone到本地</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/hyperledger/fabric-samples
+</pre></div>
+</div>
+<div align=center><p><img alt="fabric-samples" src="../_images/20200325135321.png" /></p>
+</div></div>
+<div class="section" id="id2">
+<h3>2、生成秘钥及相关交易信息<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h3>
+<p>cd到fabric-samples/first-network目录下，运行</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./byfn.sh  generate
+</pre></div>
+</div>
+<p>该命令是用于生成fabric网络中的组件秘钥信息以及初始的交易信息。包括：ordering服务和节点的秘钥信息(msp和tls的证书)，ordering服务的创世块，管道配置交易信息(channel.tx)，和锚点的更新交易信息。</p>
+<p>命令运行完成后，可以看到first-network下的crypto-config 和channel-artifacts文件夹下都新生成了一些文件。Channel-artifacts下是新生成的创世块和管道交易信息，以及锚点更新交易信息。Crypto-config里则是ordering 服务和节点相关的秘钥信息。</p>
+</div>
+<div class="section" id="id3">
+<h3>3、启动网络<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./byfn.sh up
+</pre></div>
+</div>
+<p>该命令启动了一个默认设置的网络，这些默认的设置包括：</p>
+<ul class="simple">
+<li><p>channel名字为myChannel</p></li>
+<li><p>cli的timeout时间为10s</p></li>
+<li><p>延迟为3s</p></li>
+<li><p>使用的docker-compose-file为docker-compose-cli.yaml</p></li>
+<li><p>数据库类型为goleveldb</p></li>
+<li><p>语言为go语言</p></li>
+<li><p>使用最新的镜像启动网络</p></li>
+</ul>
+<p>完整的命令如下：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./byfn.sh up –c myChannel –t <span class="m">10</span> –d <span class="m">3</span> –f docker-compose-cli.yaml –s goleveldb –l go –i latest
+</pre></div>
+</div>
+</div>
+<div class="section" id="id4">
+<h3>4、启动的流程为：<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h3>
+<p>1)、创建四个节点</p>
+<p>2)、创建了一个ordering服务</p>
+<p>3)、创建了一个cli服务，为了下面可以使用 docker exec -it bash 进入到各个容器内。</p>
+<p>4)、创建一个channel</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">peer</span> <span class="n">channel</span> <span class="n">create</span> <span class="o">-</span><span class="n">o</span> <span class="n">orderer</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="p">:</span><span class="mi">7050</span> <span class="o">-</span><span class="n">c</span> <span class="n">mychannel</span> <span class="o">-</span><span class="n">f</span> <span class="o">./</span><span class="n">channel</span><span class="o">-</span><span class="n">artifacts</span><span class="o">/</span><span class="n">channel</span><span class="o">.</span><span class="n">tx</span> <span class="o">--</span><span class="n">tls</span> <span class="n">true</span> <span class="o">--</span><span class="n">cafile</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">gopath</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">hyperledger</span><span class="o">/</span><span class="n">fabric</span><span class="o">/</span><span class="n">peer</span><span class="o">/</span><span class="n">crypto</span><span class="o">/</span><span class="n">ordererOrganizations</span><span class="o">/</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">orderers</span><span class="o">/</span><span class="n">orderer</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">msp</span><span class="o">/</span><span class="n">tlscacerts</span><span class="o">/</span><span class="n">tlsca</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="o">-</span><span class="n">cert</span><span class="o">.</span><span class="n">pem</span>
+</pre></div>
+</div>
+<p>5)、分别把四个节点加入到这个channel中</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">peer</span> <span class="n">channel</span> <span class="n">join</span> <span class="o">-</span><span class="n">b</span> <span class="n">mychannel</span><span class="o">.</span><span class="n">block</span>
+</pre></div>
+</div>
+<p>6)、之后更新这些加入到myChannel的节点所属的ordering服务已经msp信息</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">peer</span> <span class="n">channel</span> <span class="n">update</span> <span class="o">-</span><span class="n">o</span> <span class="n">orderer</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="p">:</span><span class="mi">7050</span> <span class="o">-</span><span class="n">c</span> <span class="n">mychannel</span> <span class="o">-</span><span class="n">f</span> <span class="o">./</span><span class="n">channel</span><span class="o">-</span><span class="n">artifacts</span><span class="o">/</span><span class="n">Org2MSPanchors</span><span class="o">.</span><span class="n">tx</span> <span class="o">--</span><span class="n">tls</span> <span class="n">true</span> <span class="o">--</span><span class="n">cafile</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">gopath</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">hyperledger</span><span class="o">/</span><span class="n">fabric</span><span class="o">/</span><span class="n">peer</span><span class="o">/</span><span class="n">crypto</span><span class="o">/</span><span class="n">ordererOrganizations</span><span class="o">/</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">orderers</span><span class="o">/</span><span class="n">orderer</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">msp</span><span class="o">/</span><span class="n">tlscacerts</span><span class="o">/</span><span class="n">tlsca</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="o">-</span><span class="n">cert</span><span class="o">.</span><span class="n">pem</span>
+</pre></div>
+</div>
+<p>7)、安装默认的chaincode到peer0.org2节点上</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">peer</span> <span class="n">chaincode</span> <span class="n">install</span> <span class="o">-</span><span class="n">n</span> <span class="n">mycc</span> <span class="o">-</span><span class="n">v</span> <span class="mf">1.0</span> <span class="o">-</span><span class="n">l</span> <span class="n">golang</span> <span class="o">-</span><span class="n">p</span> <span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">chaincode</span><span class="o">/</span><span class="n">chaincode_example02</span><span class="o">/</span><span class="n">go</span><span class="o">/</span>
+</pre></div>
+</div>
+<p>8)、实例化chaincode</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">peer</span> <span class="n">chaincode</span> <span class="n">instantiate</span> <span class="o">-</span><span class="n">o</span> <span class="n">orderer</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="p">:</span><span class="mi">7050</span> <span class="o">--</span><span class="n">tls</span> <span class="n">true</span> <span class="o">--</span><span class="n">cafile</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">gopath</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">hyperledger</span><span class="o">/</span><span class="n">fabric</span><span class="o">/</span><span class="n">peer</span><span class="o">/</span><span class="n">crypto</span><span class="o">/</span><span class="n">ordererOrganizations</span><span class="o">/</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">orderers</span><span class="o">/</span><span class="n">orderer</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">msp</span><span class="o">/</span><span class="n">tlscacerts</span><span class="o">/</span><span class="n">tlsca</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="o">-</span><span class="n">cert</span><span class="o">.</span><span class="n">pem</span> <span class="o">-</span><span class="n">C</span> <span class="n">mychannel</span> <span class="o">-</span><span class="n">n</span> <span class="n">mycc</span> <span class="o">-</span><span class="n">l</span> <span class="n">golang</span> <span class="o">-</span><span class="n">v</span> <span class="mf">1.0</span> <span class="o">-</span><span class="n">c</span> <span class="s1">&#39;{&quot;Args&quot;:[&quot;init&quot;,&quot;a&quot;,&quot;100&quot;,&quot;b&quot;,&quot;200&quot;]}&#39;</span> <span class="o">-</span><span class="n">P</span> <span class="s1">&#39;OR    (&#39;</span>\<span class="s1">&#39;&#39;</span><span class="n">Org1MSP</span><span class="o">.</span><span class="n">peer</span><span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="p">,</span><span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="n">Org2MSP</span><span class="o">.</span><span class="n">peer</span><span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="p">)</span><span class="s1">&#39;</span>
+</pre></div>
+</div>
+<p>9)、最后做了一步对链码的验证工作。</p>
+<p>查询交易</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">peer</span> <span class="n">chaincode</span> <span class="n">query</span> <span class="o">-</span><span class="n">C</span> <span class="n">mychannel</span> <span class="o">-</span><span class="n">n</span> <span class="n">mycc</span> <span class="o">-</span><span class="n">c</span> <span class="s1">&#39;{&quot;Args&quot;:[&quot;query&quot;,&quot;a&quot;]}&#39;</span>
+</pre></div>
+</div>
+<p>调用交易</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">peer</span> <span class="n">chaincode</span> <span class="n">invoke</span> <span class="o">-</span><span class="n">o</span> <span class="n">orderer</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="p">:</span><span class="mi">7050</span> <span class="o">--</span><span class="n">tls</span> <span class="n">true</span> <span class="o">--</span><span class="n">cafile</span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">gopath</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">hyperledger</span><span class="o">/</span><span class="n">fabric</span><span class="o">/</span><span class="n">peer</span><span class="o">/</span><span class="n">crypto</span><span class="o">/</span><span class="n">ordererOrganizations</span><span class="o">/</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">orderers</span><span class="o">/</span><span class="n">orderer</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">msp</span><span class="o">/</span><span class="n">tlscacerts</span><span class="o">/</span><span class="n">tlsca</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="o">-</span><span class="n">cert</span><span class="o">.</span><span class="n">pem</span> <span class="o">-</span><span class="n">C</span> <span class="n">mychannel</span> <span class="o">-</span><span class="n">n</span> <span class="n">mycc</span> <span class="o">-</span><span class="n">c</span><span class="s1">&#39;{&quot;Args&quot;:[&quot;invoke&quot;,&quot;a&quot;,&quot;b&quot;,&quot;10&quot;]}&#39;</span>
+</pre></div>
+</div>
+<p>到这里我们整个网络已经启动完成。这个时候可以看下运行的容器情况，通过docker ps可以查看到相关容器信息</p>
+<div align=center><p><img alt="容器信息" src="../_images/20200325140435.png" /></p>
+</div><p>至此，一个简易的fabric网络就搭建成功了。</p>
+</div>
 </div>
 </div>
 
