@@ -92,7 +92,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../chapter01/index.html">第一章、Hyperledger Fabric 架构详解</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapter02/index.html">第二章、 Fabric网络搭建详解</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">第三章、Hyperledger Fabric浏览器</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">1. Hyperledger Fabric浏览器搭建</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">1. Hyperledger Fabric浏览器搭建</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">1.1. Hyperledger Fabric浏览器效果图</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="02_explorer_exception.html">2. Hyperledger Fabric浏览器搭建异常问题汇总</a></li>
 <li class="toctree-l2"><a class="reference internal" href="03_explorer_postgresql.html">3. CentOS安装PostgreSQL</a></li>
 </ul>
@@ -167,18 +170,15 @@
             
   <div class="section" id="hyperledger-fabric">
 <h1><span class="section-number">1. </span>Hyperledger Fabric浏览器搭建<a class="headerlink" href="#hyperledger-fabric" title="永久链接至标题">¶</a></h1>
-<p>2.0版本的Fabric，则迎来了以下这些改进：</p>
-<ul class="simple">
-<li><p>新的链码（chaincode）生命周期管理：重新设计的链码生命周期管理过程引入了智能合约的去中心化治理，在与账本进行交互之前，新的Fabric链码生命周期允许多个组织在链码参数（如链码认可策略）上达成一致；</p></li>
-<li><p>用于协作和共识的新链码应用模式；</p></li>
-<li><p>在需知悉基础上的数据隐私：组织现在可选择与其直接网络的特定成员私下共享数据；</p></li>
-<li><p>新的外部链码启动程序：该功能允许操作者使用自己选择的技术来构建和启动链码；</p></li>
-<li><p>新的Raft共识；</p></li>
-<li><p>性能改进：包括任务的并行化和更高效的程序流，允许网络每秒支持数千笔交易；</p></li>
-</ul>
-<p>本课程主要围绕以太坊的基础，分了六章如图所示：</p>
-<div align=center><p><img alt="以太坊的基础教程" src="../_images/5e023008af6a72.jpg" /></p>
-</div></div>
+<p>关于fabric explorer区块链浏览器搭建可以参考官方文档
+<a class="reference external" href="https://github.com/hyperledger/blockchain-explorer">https://github.com/hyperledger/blockchain-explorer</a>
+这里会基于官方文档，并就安装过程中遇到的坑列出来，供大家参考！</p>
+<div class="section" id="id1">
+<h2><span class="section-number">1.1. </span>Hyperledger Fabric浏览器效果图<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h2>
+<p>首先看一下效果图</p>
+ <div align=left><p><img alt="Hyperledger Fabric浏览器效果图" src="../_images/20200320164717.png" /></p>
+ </div></div>
+</div>
 
 
            </div>
